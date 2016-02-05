@@ -48,38 +48,6 @@
 	</div>
 </nav>
 
-
-<article>
-	<div id="app"></div>
-	<div>
-		Existing content
-	</div>
-	<div class="replaceable">
-		Some content that we want ember to replace
-	</div>
-</article>
-
-<script type="text/x-handlebars">
-    <h2> Welcome!</h2>
-
-    <div>
-      <button {{action "showStuff"}}>Click me!</button>
-      <button {{action "loadPosts"}}>Load posts</button>
-    </div>
-
-    {{someText}}
-  </script>
-
-<script type="text/x-handlebars" data-template-name="posts">
-    {{#each posts}}
-      <div>Post: {{title}}</div>
-    {{else}}
-      LOADING POSTS
-    {{/each}}
-  </script>
-
-
-
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-xs-12 col-md-10" >
@@ -87,9 +55,13 @@
 				<div id="map" class="map"></div>
 			</div>
 		</div>
-		<div class="col-xs-12 col-md-2 text-center">
-			<h4>Current Incidents</h4>
+		<div class="col-xs-12 col-md-2" id="incidentList">
+			<h4 class="text-center">Current Incidents</h4>
 			<hr>
+			<div class="incidents">
+			<span class="loading">Loading</span>
+				<ul></ul>
+			</div>
 		</div>
 	</div>
 </div><!-- /.container -->
@@ -110,7 +82,11 @@
 
 			<!-- Modal Body -->
 			<div class="modal-body">
-				<form role="form">
+				<form id="incidentForm" class="newIncidentForm" role="form">
+					<div class="form-group">
+						<label for="name">Name</label>
+						<input type="text" class="form-control" id="name" placeholder="Name"/>
+					</div>
 					<div class="form-group">
 						<div style="margin-bottom: 0.5em">
 							<label for="latitude">Location</label>
@@ -131,7 +107,7 @@
 					</div>
 					<div class="form-group">
 						<label for="ros">Ros</label>
-						<input type="text" class="form-control" id="ros" placeholder="Roc"/>
+						<input type="text" class="form-control" id="ros" placeholder="Ros"/>
 					</div>
 					<div class="form-group">
 						<label for="roc">Roc</label>
@@ -157,7 +133,7 @@
 						<label for="comments">Other Comments</label>
 						<textarea type="textarea" class="form-control" id="comments" placeholder="Other Comments"></textarea>
 					</div>
-					<button type="button" class="btn btn-default btn-primary">Submit</button>
+					<button type="submit" class="btn btn-default btn-primary">Submit</button>
 				</form>
 			</div>
 		</div>
@@ -171,16 +147,17 @@
 	<!-- build:js scripts/vendor.js -->
 	<script src="lib/scripts/leaflet.js"></script>
   <!-- bower:js -->
-  <script src="bower_components/jquery/dist/jquery.js"></script>
-  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v1.3.0.js"></script>
-<script src="http://builds.emberjs.com/tags/v1.5.0/ember.js"></script>
+  	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="bower_components/firebase/firebase.js"></script>
+	<!--<script src="http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v1.3.0.js"></script>-->
+	<!--<script src="http://builds.emberjs.com/tags/v1.5.0/ember.js"></script>-->
 	<!-- endbower -->
   <!-- endbuild -->
 
 	<!-- build:js scripts/main.js -->
 	<script src="scripts/main.js"></script>
-	<script src="scripts/ember-script.js"></script>
+	<!--<script src="scripts/ember-script.js"></script>-->
 	<!-- endbuild -->
 </body>
 </html>

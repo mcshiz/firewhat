@@ -39,3 +39,22 @@
 .modal-body .form-horizontal .col-sm-offset-2 {
 	margin-left: 15px;
 }
+.incidentName {
+	font-size: 1.5em;
+	font-weight: 700;
+}
+.editIncident {
+	cursor: pointer;
+	padding: 0.5em;
+	height: 2em;
+}
+.editIncident:hover {
+	cursor: pointer;
+	padding: 0.5em;
+	font-weight: 700;
+	border-bottom: 1px solid #e4e4e4;
+	display: inline-block;
+}
+.editIncident span {
+	margin-left: 0.5em;
+}

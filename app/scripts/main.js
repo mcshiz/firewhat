@@ -1,8 +1,8 @@
 
-
-
-var initMap = function (window, document, L, undefined) {
+var myMap = function (window, document, L, undefined) {
 	'use strict';
+	myMap.markers = [];
+	myMap.incidentCounter;
 	L.Icon.Default.imagePath = 'images/';
 
 	/* create leaflet map */
@@ -21,24 +21,56 @@ var initMap = function (window, document, L, undefined) {
 	}).addTo(map);
 
 
+	var ref = new Firebase("https://firewhat.firebaseio.com/");
+	ref.on("value", function(snapshot) {
+		var incident = snapshot.val();
+		$.each(incident, function(key, val){
+			addMarker(incident[key], key);
+			myMap.listIncident(incident[key], key);
+			myMap.incidentCounter = parseInt(key);
+		})
+	}, function (errorObject) {
+		console.log("The read failed: " + errorObject.code);
+	});
 
-
-
-	function addMarker(e){
-		var location;
-		//handle multiple types of location data
-		if(Array.isArray(e)) {
-			location = e
-		} else {
-			location = {lat: e.lat, lng: e.lng}
-		}
-		var newMarker = new L.marker(location).addTo(map).on('click', function(){
-			console.log("marker cicked")
-
-		});
+	myMap.IncidentDetails = function(i) {
+		this.location = {lat: i.location.lat, lng: i.location.lng};
+		this.name = i.name;
+		this.acres = i.acres;
+		this.comments = i.comments;
+		this.hazards = i.hazards;
+		this.radio = i.radio;
+		this.resources = i.resources;
+		this.roc = i.roc;
+		this.ros = i.ros;
+		this.structures = i.structures;
+	}
+	function addMarker(i, ref){
+		var incident = new myMap.IncidentDetails(i);
+		var marker = new L.marker(incident.location, {id: ref}).addTo(map)
+		var popupContent = '' +
+			'<div class="editIncident" data-id="'+ref+'"><b class="glyphicon glyphicon-pencil "></b><span>Edit Incident</span></div>' +
+			'<p>' +
+			'<span class="incidentName">'+incident.name+'</span><br>' +
+			'<span class="incidentAcres"><b>Acres: </b>'+incident.acres+'</span><br>' +
+			'<span class="incidentRos"><b>Ros: </b>'+incident.ros+'</span><br>' +
+			'<span class="incidentRoc"><b>Roc: </b>'+incident.roc+'</span><br>' +
+			'<span class="incidentStructures"><b>Structures: </b>'+incident.structures+'</span><br>' +
+			'<span class="incidentHazards"><b>Hazards: </b>'+incident.hazards+'</span><br>' +
+			'<span class="incidentResources"><b>Resources: </b>'+incident.resources+'</span><br>' +
+			'<span class="incidentRadio"><b>Radio: </b>'+incident.radio+'</span><br>' +
+			'<span class="incidentComments"><b>Comments: </b>'+incident.comments+'</span><br>' +
+			'</p>';
+		marker.bindPopup(popupContent);
+		myMap.markers.push(marker);
 	}
 
-	addMarker([41.315646199999996, -122.3133991])
+	myMap.listIncident = function(i, ref){
+		var $list = $("#incidentList");
+		$list.find('.loading').remove();
+		$list.find('ul').append('<li onclick="myMap.showIncident(this)" data-ref="'+ref+'">'+ i.name+'</li>');
+
+	}
 
 	//click map to toggle zoom and drag (might want to consider doing this only for mobile)
 	map.on('click', function() {
@@ -63,7 +95,7 @@ var initMap = function (window, document, L, undefined) {
 	});
 	map.addControl( new addIncidentButton());
 
-	$("#location-picker").on('click', function(){
+	$("#location-picker").on('click touchstart', function(){
 		var $modal = $("#addIncidentModal");
 		$modal.modal('hide');
 		$("#map").css('cursor', 'crosshair');
@@ -74,7 +106,21 @@ var initMap = function (window, document, L, undefined) {
 			popLatLng($modal, e.latlng)
 		});
 	});
-return map;
+
+	myMap.showIncident = function(i){
+		var id = $(i).data("ref");
+		var ref = new Firebase("https://firewhat.firebaseio.com/"+id);
+		ref.on("value", function(snapshot) {
+			var incident = snapshot.val();
+			map.panTo(new L.LatLng(incident.location.lat,incident.location.lng));
+			});
+		for (var j in myMap.markers){
+			var markerID = myMap.markers[j].options.id;
+			if (markerID == id){
+				myMap.markers[j].openPopup();
+			}
+		}
+	}
 
 };
 
@@ -82,7 +128,7 @@ return map;
 var GeoLocation = (function(callback) {
 	var options = {
 		enableHighAccuracy : true,
-		timeout : 3000,
+		timeout : 10000,
 		maximumAge : 0
 	};
 	function getLocation(position) {
@@ -132,7 +178,7 @@ var GeoLocation = (function(callback) {
 		}
 	}
 
-})(initMap);
+})(myMap);
 
 
 
@@ -142,10 +188,70 @@ function popLatLng(elem, latLng){
 	elem.modal('show');
 }
 
-function populateModal() {
+function addNewIncident(form) {
+	var edit;
+	$(form).hasClass("editIncidentForm")? edit = true : edit = false;
+	var incidentObject = {
+		location: {lat: $(form).find("#latitude").val(), lng:$(form).find("#longitude").val()},
+		name: $(form).find("#name").val(),
+		acres: $(form).find("#acres").val(),
+		comments: $(form).find("#comments").val(),
+		hazards: $(form).find("#hazards").val(),
+		radio: $(form).find("#radio").val(),
+		resources: $(form).find("#resources").val(),
+		roc: $(form).find("#roc").val(),
+		ros: $(form).find("#ros").val(),
+		structures: $(form).find("#structures").val()
+	};
+	var newIncident = new myMap.IncidentDetails(incidentObject);
+	var incidentRef = ++myMap.incidentCounter;
+	var id = $(form).data("incidentid");
+	var refObject = edit ?id :incidentRef;
+	var ref = new Firebase("https://firewhat.firebaseio.com/"+refObject);
+	if(edit === true) {
+		console.log("updating...")
+
+		ref.update(newIncident)
+	} else {
+		console.log("setting...")
+		ref.set(newIncident);
+		myMap.listIncident(newIncident, incidentRef);
+	}
+
 
 }
 
+function editIncident(id){
+	var $modal = $("#addIncidentModal");
+	var ref = new Firebase("https://firewhat.firebaseio.com/"+id);
+	ref.once("value", function(snapshot) {
+		var incident = snapshot.val();
+		$modal.find("#latitude").val(incident.location.lat);
+		$modal.find("#longitude").val(incident.location.lng);
+		$modal.find("#name").val(incident.name);
+		$modal.find("#acres").val(incident.acres);
+		$modal.find("#comments").val(incident.comments);
+		$modal.find("#hazards").val(incident.hazards);
+		$modal.find("#radio").val(incident.radio);
+		$modal.find("#resources").val(incident.resources);
+		$modal.find("#roc").val(incident.roc);
+		$modal.find("#ros").val(incident.ros);
+		$modal.find("#structures").val(incident.structures);
+	}, function (errorObject) {
+		console.log("The read failed: " + errorObject.code);
+	});
+	$modal.modal('show');
+}
 
-
-
+$(".newIncidentForm").submit(function(e){
+	e.preventDefault();
+	addNewIncident($(this)[0]);
+	$("#addIncidentModal").modal('hide');
+});
+$('body').on("click touchstart",'.editIncident', function(){
+	console.log("editing...")
+	var $id = $(this).data('id');
+	$('#incidentForm').removeClass().addClass('editIncidentForm');
+	$('#incidentForm').attr("data-incidentId", $id);
+	editIncident($id)
+});
