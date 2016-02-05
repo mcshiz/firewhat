@@ -53,13 +53,17 @@
 		<div class="col-xs-12 col-md-10" >
 			<div class="map-application">
 				<div id="map" class="map"></div>
+				<div class="iconKey">
+					<b class="glyphicon glyphicon-fire"></b><span>Center point of incident</span><br>
+					<b class="glyphicon glyphicon-map-marker"></b><span>Your current location</span>
+				</div>
 			</div>
 		</div>
 		<div class="col-xs-12 col-md-2" id="incidentList">
 			<h4 class="text-center">Current Incidents</h4>
 			<hr>
 			<div class="incidents">
-			<span class="loading">Loading</span>
+				<b class="loading">Loading <span>.</span><span>.</span><span>.</span></b>
 				<ul></ul>
 			</div>
 		</div>
@@ -77,7 +81,7 @@
 					<span aria-hidden="true">&times;</span>
 					<span class="sr-only">Close</span>
 				</button>
-				<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+				<h4 class="modal-title" id="myModalLabel">FireWhat Incident Reporting</h4>
 			</div>
 
 			<!-- Modal Body -->
@@ -85,7 +89,7 @@
 				<form id="incidentForm" class="newIncidentForm" role="form">
 					<div class="form-group">
 						<label for="name">Name</label>
-						<input type="text" class="form-control" id="name" placeholder="Name"/>
+						<input type="text" class="form-control" id="name" name="name" placeholder="Name"/>
 					</div>
 					<div class="form-group">
 						<div style="margin-bottom: 0.5em">
@@ -94,44 +98,44 @@
 						</div>
 						<div class="row">
 							<div class="col-xs-6">
-								<input type="text" class="form-control col-xs-6" id="latitude" placeholder="Latitude"/>
+								<input type="text" class="form-control col-xs-6" id="latitude" name="latitude" placeholder="Latitude"/>
 							</div>
 							<div class="col-xs-6">
-								<input type="text" class="form-control col-xs-6" id="longitude" placeholder="Longitude"/>
+								<input type="text" class="form-control col-xs-6" id="longitude" name="longitude" placeholder="Longitude"/>
 							</div>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="acres">Acres</label>
-						<input type="text" class="form-control" id="acres" placeholder="Acres"/>
+						<input type="text" class="form-control" id="acres" name="acres" placeholder="Acres"/>
 					</div>
 					<div class="form-group">
 						<label for="ros">Ros</label>
-						<input type="text" class="form-control" id="ros" placeholder="Ros"/>
+						<input type="text" class="form-control" id="ros" name="ros" placeholder="Ros"/>
 					</div>
 					<div class="form-group">
 						<label for="roc">Roc</label>
-						<input type="text" class="form-control" id="roc" placeholder="Roc"/>
+						<input type="text" class="form-control" id="roc" name="roc" placeholder="Roc"/>
 					</div>
 					<div class="form-group">
 						<label for="structures">Structures</label>
-						<input type="text" class="form-control" id="structures" placeholder="Structures"/>
+						<input type="text" class="form-control" id="structures" name="structures" placeholder="Structures"/>
 					</div>
 					<div class="form-group">
 						<label for="hazards">Special Hazards</label>
-						<input type="text" class="form-control" id="hazards" placeholder="Special Hazards"/>
+						<input type="text" class="form-control" id="hazards" name="hazards" placeholder="Special Hazards"/>
 					</div>
 					<div class="form-group">
 						<label for="resources">Resources</label>
-						<input type="text" class="form-control" id="resources" placeholder="Resources"/>
+						<input type="text" class="form-control" id="resources" name="resources" placeholder="Resources"/>
 					</div>
 					<div class="form-group">
 						<label for="radio">Radio Frequencies</label>
-						<input type="text" class="form-control" id="radio" placeholder="Radio Frequencies"/>
+						<input type="text" class="form-control" id="radio" name="radio" placeholder="Radio Frequencies"/>
 					</div>
 					<div class="form-group">
 						<label for="comments">Other Comments</label>
-						<textarea type="textarea" class="form-control" id="comments" placeholder="Other Comments"></textarea>
+						<textarea type="textarea" class="form-control" id="comments" name="comments" placeholder="Other Comments"></textarea>
 					</div>
 					<button type="submit" class="btn btn-default btn-primary">Submit</button>
 				</form>
@@ -150,6 +154,8 @@
   	<script src="bower_components/jquery/dist/jquery.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script src="bower_components/firebase/firebase.js"></script>
+	<script src="bower_components/bootbox/bootbox.js"></script>
+	<script src="bower_components/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js"></script>
 	<!--<script src="http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v1.3.0.js"></script>-->
 	<!--<script src="http://builds.emberjs.com/tags/v1.5.0/ember.js"></script>-->
 	<!-- endbower -->
