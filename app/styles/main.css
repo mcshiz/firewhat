@@ -1,12 +1,41 @@
 
 .map {
-	width: 100%;
-	height: 100%;
+	height: 500px;
 }
 
 .map-application {
 	height: 100%;
 }
 
+.glyphicon.glyphicon-fire.leaflet-control-custom {
+	font-size: 2em;
+	line-height: 30px !important;
+	padding: 0 0.25em;
+	display: block;
+	cursor: pointer;
+	background-color: white;
 
 
+}
+.glyphicon.glyphicon-fire.leaflet-control-custom:hover {
+	background-color: #e4e4e4;
+
+}
+.glyphicon.glyphicon-fire.leaflet-control-custom:after {
+	font-weight: 700;
+	font-size: 0.5em;
+	content: "Add Incident";
+	display: block;
+}
+
+.modal-body .form-horizontal .col-sm-2,
+.modal-body .form-horizontal .col-sm-10 {
+	width: 100%
+}
+
+.modal-body .form-horizontal .control-label {
+	text-align: left;
+}
+.modal-body .form-horizontal .col-sm-offset-2 {
+	margin-left: 15px;
+}
